@@ -60,24 +60,34 @@ public class ImageLoader : MonoBehaviour
     /// </summary>
     private void LoadAndDisplayImage()
     {
-        // Check if the file exists
-        if (File.Exists(filePath))
+        // Inside try-catch to avoid runtime pause error
+        try
         {
-            // Load the image file into a byte array
-            byte[] fileData = File.ReadAllBytes(filePath);
+            // Check if the file exists
+            if (File.Exists(filePath))
+            {
+                // Load the image file into a byte array
+                byte[] fileData = File.ReadAllBytes(filePath);
 
-            // Create a Texture2D and load the image data into it
-            Texture2D texture = new Texture2D(2, 2);
-            texture.LoadImage(fileData);
+                // Create a Texture2D and load the image data into it
+                Texture2D texture = new Texture2D(2, 2);
+                texture.LoadImage(fileData);
 
-            // Assign the texture to the RawImage component
-            material.SetTexture("_MainTex", texture);
-            Debug.Log("Updating image");
+                // Assign the texture to the RawImage component
+                material.SetTexture("_MainTex", texture);
+                Debug.Log("Updating image");
+            }
+            else
+            {
+                // File path not found
+                Debug.LogWarning("File not found: " + fileName);
+            }
         }
-        else
+        catch
         {
-            // File path not found
-            Debug.LogWarning("File not found: " + fileName);
+            // Tried to retrieve file while it was being updated
+            Debug.Log("Frame skipped");
         }
+
     }
 }
